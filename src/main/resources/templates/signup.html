@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup - ProgressLogger</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url("https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/12/Harry-Potter-Hogwarts-Castle.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+        .form-container {
+            width: 400px;
+            padding: 40px;
+            border-radius: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .form-group label {
+            color: gray;
+            transition: all 0.3s ease-in-out;
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            z-index: 1;
+        }
+        .form-group label.active {
+            top: -10px;
+            left: 10px;
+            color: deepskyblue;
+            font-size: 12px;
+        }
+        .form-control {
+            background: #343a40;
+            color: #fff;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            z-index: 0;
+        }
+        .form-control:focus {
+            border: 2px solid #80bdff;
+            background: #343a40;
+            color: #fff;
+        }
+        .error {
+            visibility: hidden;
+            background: #ce3131;
+            padding: 5px;
+        }
+        .error h3 {
+            display: inline;
+        }
+        .error.active {
+            visibility: visible;
+        }
+        .btn-primary {
+            background: blueviolet;
+            color: white;
+        }
+        a {
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100 text-light">
+<div class="container text-center">
+    <h1>ProgressLogger.com</h1>
+    <div class="error" id="error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <h3>Email already in use</h3>
+    </div>
+    <form action="/register" method="post" class="form-container bg-dark">
+        <h1 class="h3 mb-3 font-weight-normal">Create Account</h1>
+        <div class="form-group position-relative">
+            <label for="nameInput" id="nameLabel">Your Name</label>
+            <input type="text" name="accountName" id="nameInput" class="form-control" required autofocus>
+        </div>
+        <div class="form-group position-relative">
+            <label for="emailInput" id="emailLabel">Email</label>
+            <input type="email" name="email" id="emailInput" class="form-control" required>
+        </div>
+        <div class="form-group position-relative">
+            <label for="passwordInput" id="passwordLabel">Password</label>
+            <input type="password" name="password" id="passwordInput" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-secondary" type="button" onclick="resetForm()"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="form-group">
+            <p>Already have an account? <a href="/login">Log in.</a></p>
+        </div>
+
+    </form>
+</div>
+<script src="https://kit.fontawesome.com/9ad341d7c1.js" crossorigin="anonymous"></script>
+<script>
+
+    let nameInput = document.getElementById("emailInput");
+    let nameLabel = document.getElementById("emailLabel");
+    let emailInput = document.getElementById("nameInput");
+    let emailLabel = document.getElementById("nameLabel");
+    let passwordInput = document.getElementById("passwordInput");
+    let passwordLabel = document.getElementById("passwordLabel");
+
+    window.onload = function () {
+        let err = document.getElementById("error");
+        let urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("err")) {
+            err.classList.add("active");
+        } else {
+            err.classList.remove("active");
+        }
+        handleLabelDisplay(nameInput, nameLabel);
+        handleLabelDisplay(emailInput, emailLabel);
+        handleLabelDisplay(passwordInput, passwordLabel);
+    }
+
+    function handleLabelDisplay(input, label) {
+        if (input.value !== "") {
+            label.classList.add("active");
+        } else {
+            label.classList.remove("active");
+        }
+    }
+
+    nameInput.addEventListener("input", function () {
+        handleLabelDisplay(nameLabel, nameLabel);
+    });
+
+    emailInput.addEventListener("input", function () {
+        handleLabelDisplay(emailInput, emailLabel);
+    });
+
+    passwordInput.addEventListener("input", function () {
+        handleLabelDisplay(passwordInput, passwordLabel);
+    });
+
+    function resetForm() {
+        nameInput.value = "";
+        emailInput.value = "";
+        passwordInput.value = "";
+        handleLabelDisplay(usernameInput, usernameLabel);
+        handleLabelDisplay(passwordInput, passwordLabel);
+    }
+</script>
+</body>
+</html>

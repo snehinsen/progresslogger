@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - ProgressLogger</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url("https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/12/Harry-Potter-Hogwarts-Castle.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+        .form-container {
+            width: 400px;
+            padding: 40px;
+            border-radius: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .form-group label {
+            color: gray;
+            transition: all 0.3s ease-in-out;
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            z-index: 1;
+        }
+        .form-group label.active {
+            top: -10px;
+            left: 10px;
+            color: deepskyblue;
+            font-size: 12px;
+        }
+        .form-control {
+            background: #343a40;
+            color: #fff;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            z-index: 0;
+        }
+        .form-control:focus {
+            border: 2px solid #80bdff;
+            background: #343a40;
+            color: #fff;
+        }
+        .error {
+            visibility: hidden;
+            background: #ce3131;
+            padding: 5px;
+        }
+        .error h3 {
+            display: inline;
+        }
+        .error.active {
+            visibility: visible;
+        }
+        .btn-primary {
+            background: blueviolet;
+            color: white;
+        }
+        a {
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100 text-light">
+<div class="container text-center">
+    <h1>ASite.com</h1>
+    <div class="error" id="error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <h3>Incorrect username or password</h3>
+    </div>
+    <form action="/login" method="post" class="form-container bg-dark">
+        <h1 class="h3 mb-3 font-weight-normal">Please Sign in</h1>
+        <div class="form-group position-relative">
+            <label for="email" id="emailLabel">Email</label>
+            <input type="email" name="email" id="email" class="form-control" required autofocus>
+        </div>
+        <div class="form-group position-relative">
+            <label for="password" id="passwordLabel">Password</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-secondary" type="button" onclick="resetForm()"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div class="form-group text-right">
+            <a class="btn btn-link" href="/forgotpassword">Forgot password?</a>
+        </div>
+
+        <div class="form-group">
+            <p>Don't have an account? <a href="/signup">Sign up now.</a></p>
+        </div>
+
+    </form>
+</div>
+<script src="https://kit.fontawesome.com/9ad341d7c1.js" crossorigin="anonymous"></script>
+<script>
+    window.onload = function () {
+        let err = document.getElementById("error");
+        let urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("error")) {
+            err.classList.add("active");
+        } else {
+            err.classList.remove("active");
+        }
+    }
+
+    function handleLabelDisplay(input, label) {
+        if (input.value !== "") {
+            label.classList.add("active");
+        } else {
+            label.classList.remove("active");
+        }
+    }
+
+    let emailInput = document.getElementById("email");
+    let emailLabel = document.getElementById("emailLabel");
+
+    emailInput.addEventListener("input", function () {
+        handleLabelDisplay(emailInput, emailLabel);
+    });
+
+    let passwordInput = document.getElementById("password");
+    let passwordLabel = document.getElementById("passwordLabel");
+
+    passwordInput.addEventListener("input", function () {
+        handleLabelDisplay(passwordInput, passwordLabel);
+    });
+
+    function resetForm() {
+        usernameInput.value = "";
+        passwordInput.value = "";
+        handleLabelDisplay(usernameInput, usernameLabel);
+        handleLabelDisplay(passwordInput, passwordLabel);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging App - Dark Mode</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 230px;
+            overflow-y: auto;
+            padding: 10px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-heading {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .chat-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .chat-list-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #6c757d;
+        }
+
+        .chat-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .chat-list-item a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+        }
+
+        .chat-list-item a:hover {
+            background-color: #6c757d;
+            border-radius: 5px;
+        }
+
+        .search-form {
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            background-color: #495057;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+        }
+
+        .form-control:focus {
+            background-color: #495057;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .input-group-append button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .new-post-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .new-post-btn i {
+            margin-right: 5px;
+        }
+
+        .user-dropdown {
+            width: 100%;
+        }
+
+        .user-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            background-color: #495057;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .user-dropdown-toggle img {
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-container {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            max-width: calc(100% - 250px);
+        }
+
+        .messages {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 5px;
+            max-width: 75%;
+            position: relative;
+            display: inline-block;
+            word-wrap: break-word;
+            background-color: #6c757d;
+            color: #fff;
+            align-self: flex-start;
+            margin-left: 250px;
+        }
+
+        .message.me {
+            background-color: #007bff;
+            color: #fff;
+            align-self: flex-end;
+            margin-right: 100px;
+        }
+
+        @media (max-width: 1377px) {
+            .sidebar {
+                display: none;
+            }
+
+            .chat-container {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .message {
+                margin-left: 200px;
+            }
+        }
+
+        .message .copy-btn {
+            position: absolute;
+            bottom: -25px;
+            right: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .input-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .input-container .form-control {
+            border-radius: 0;
+            flex-grow: 1;
+        }
+
+        .input-container .input-group-append {
+            flex: 0 0 auto;
+        }
+
+        .heading {
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 1377px) {
+            .sidebar {
+                display: none;
+            }
+
+            .chat-container {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .message.ai {
+                margin-left: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="sidebar bg-dark">
+    <button class="new-post-btn"><i class="fa-solid fa-new"></i> New Post</button>
+    <h2 class="sidebar-heading">Posts</h2>
+    <form class="search-form">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search posts..." aria-label="Search posts" onkeyup="filterChats()">
+            <div class="input-group-append">
+                <button class="btn" type="button"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </form>
+    <ul class="chat-list" id="chatList">
+        <li class="chat-list-item" th:each="thread : ${threads}">
+            <a href="#" th:text="${thread.getName()}">Thread Name</a>
+        </li>
+    </ul>
+    <div class="user-dropdown mt-auto">
+        <button class="w-100 bg-dark user-dropdown-toggle btn text-light" data-toggle="modal" data-target="#userModal">
+            <img th:src="${pfp}" title="User PFP" width="30" height="30">
+            <span th:text="${user.getFullName()}">Name</span>
+        </button>
+    </div>
+</div>
+
+<div class="chat-container">
+    <div class="w-100 bg-dark text-light mb-3 p-1 heading">
+        <h3 th:text="${selectedThread}">Untitled Thread</h3>
+    </div>
+    <div class="messages" th:each="threadMessage : ${threadMessages}">
+        <div class="message me">
+            <span>Hello World</span>
+            <i class="fa-solid fa-copy copy-btn" onclick="copyToClipboard(this)"></i>
+        </div>
+        <div class="message">
+            <span>Hello World</span>
+            <i class="fa-solid fa-copy copy-btn" onclick="copyToClipboard(this)"></i>
+        </div>
+    </div>
+
+    <form class="input-container" action="/send" method="post">
+        <input type="text" name="message" class="form-control" placeholder="Type your message..." aria-label="Type your message" required>
+        <div class="input-group-append">
+            <button class="bg-success text-light btn btn-sm" type="submit"><i class="fa-solid fa-arrow-up"></i></button>
+        </div>
+    </form>
+</div>
+
+<!-- User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content bg-dark text-light" style="width: 90%; max-width: 600px; margin: auto;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Your Profile</h5>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex justify-content-between">
+                <div class="user-details text-center" style="flex: 1;">
+                    <img th:src="${pfp}" title="User PFP" width="80" height="80" class="rounded-circle">
+                    <h4 class="mt-2" th:text="${user.getFullName()}">Name</h4>
+                    <p class="text-muted" th:text="${user.getEmail()}">Email</p>
+                </div>
+                <div class="action-buttons ml-3" style="flex: 1;">
+                    <div class="list-group">
+                        <a href="/settings" class="list-group-item list-group-item-action bg-dark text-light">Edit Profile</a>
+                        <form action="/logout" method="post">
+                            <button type="submit" class="text-danger list-group-item list-group-item-action bg-dark">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.7"></script>
+<script src="https://kit.fontawesome.com/9ad341d7c1.js" crossorigin="anonymous"></script>
+
+<script>
+    function copyToClipboard(element) {
+        const text = element.parentElement.innerText.trim();
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+    }
+
+    function filterChats() {
+        const input = document.querySelector('.form-control');
+        const filter = input.value.toUpperCase();
+        const chatList = document.getElementById('chatList');
+        const chats = chatList.getElementsByTagName('a');
+
+        for (let i = 0; i < chats.length; i++) {
+            let chatName = chats[i].textContent || chats[i].innerText;
+            if (chatName.toUpperCase().indexOf(filter) > -1) {
+                chats[i].style.display = '';
+            } else {
+                chats[i].style.display = 'none';
+            }
+        }
+    }
+</script>
+</body>
+</html>

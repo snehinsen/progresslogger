@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - ProgressLogger</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container-fluid {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+        }
+
+        .top-bar .back-btn {
+            display: flex;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+            margin-right: auto;
+        }
+
+        .top-bar .back-btn i {
+            margin-right: 5px;
+        }
+
+        .settings-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .left-column, .right-column {
+            width: 45%;
+            margin: 0 2.5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-column .form-group, .right-column .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            background-color: #495057;
+            color: #fff;
+            border: none;
+        }
+
+        .form-control:focus {
+            background-color: #495057;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .custom-file-input {
+            background-color: #495057;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+        }
+
+        .custom-file-label::after {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .custom-file-label {
+            background-color: #495057;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .user-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-details img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+        }
+
+        .user-details h4, .user-details p {
+            margin: 10px 0;
+        }
+
+        .settings-container form {
+            width: 100%;
+        }
+
+        .right-column form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid bg-dark text-light">
+    <div class="top-bar">
+        <a href="/app" class="back-btn"><i class="fa fa-arrow-left"></i> Back</a>
+        <h2 class="ml-auto">Settings</h2>
+    </div>
+    <div class="settings-container">
+        <div class="left-column">
+            <div class="user-details">
+                <img th:src="${pfp}" title="User PFP">
+                <h4 class="mt-2" th:te+xt="${user.getFullName()}">Name</h4>
+                <p class="text-muted" th:text="${user.getEmail()}">user@example.com</p>
+            </div>
+            <button class="btn btn-danger w-100">
+                <i class="fa-solid fa-trash"></i> Delete Account</button>
+        </div>
+        <div class="right-column">
+            <form action="/settings/update" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:value="${user.getEmail()}" name="email">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${user.getFullName()}" required>
+                </div>
+                <div class="form-group">
+                    <label for="pfp">Profile Picture</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="pfp" name="pfp" accept="image/*">
+                        <label class="custom-file-label" for="pfp">Choose file</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+            </form>
+            <form action="/settings/reset-password" method="post" class="mt-4">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Reset Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.7"></script>
+<script src="https://kit.fontawesome.com/9ad341d7c1.js" crossorigin="anonymous"></script>
+<script>
+    // Script to show the selected file name in the custom file input label
+    $('.custom-file-input').on('change', function(event) {
+        var inputFile = event.currentTarget;
+        $(inputFile).parent()
+            .find('.custom-file-label')
+            .html(inputFile.files[0].name);
+    });
+</script>
+</body>
+</html>

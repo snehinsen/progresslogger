@@ -1,0 +1,24 @@
+services:
+  db:
+    image: 'postgres'
+    environment:
+      - 'POSTGRES_DB=db'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_USER=admin'
+    ports:
+      - '8542:5432'
+    restart: always
+    container_name: db
+    networks:
+      - serverNetwork
+  admiiner:
+    image: adminer
+    restart: always
+    ports:
+      - '8543:8080'
+    networks:
+      - serverNetwork
+    container_name: db_adminer
+networks:
+  serverNetwork:
+    driver: bridge
